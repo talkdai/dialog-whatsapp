@@ -15,7 +15,7 @@ from settings import (
 )
 
 from models.helpers import create_session
-from webhooks.responses import whatsapp_get_response
+from plugins.whats_audio.responses import whatsapp_get_response
 from uuid import uuid4
 
 
