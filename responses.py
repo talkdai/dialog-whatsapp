@@ -3,15 +3,15 @@ import logging
 
 from fastapi import HTTPException
 
-from llm import get_llm_class
-from settings import (
+from dialog.llm import get_llm_class
+from .settings import (
     WHATSAPP_VERIFY_TOKEN,
     WHATSAPP_API_TOKEN,
     WHATSAPP_ACCOUNT_NUMBER,
-    PROJECT_CONFIG
 )
+from dialog.settings import PROJECT_CONFIG
 
-from models.helpers import create_session
+from dialog.models.helpers import create_session
 
 logger = logging.getLogger(__name__)
 

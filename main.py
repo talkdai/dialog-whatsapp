@@ -3,18 +3,18 @@ import requests
 import hashlib
 
 from typing import Any
-from llm import get_llm_class
+from dialog.llm import get_llm_class
 from fastapi import APIRouter, Body, HTTPException, Query, Depends, Request
 from openai import OpenAI
 
-from settings import (
+from .settings import (
     WHATSAPP_VERIFY_TOKEN,
     WHATSAPP_API_TOKEN,
     WHATSAPP_ACCOUNT_NUMBER,
-    PROJECT_CONFIG
 )
+from dialog.settings import PROJECT_CONFIG
 
-from models.helpers import create_session
+from dialog.models.helpers import create_session
 from plugins.whats_audio.responses import whatsapp_get_response
 from uuid import uuid4
 
