@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+  db:
+    image: ankane/pgvector:latest
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: talkdai
+      POSTGRES_PASSWORD: talkdai
+      POSTGRES_DB: talkdai
+    volumes:
+       - ./data/db:/var/lib/postgresql/data
+       - ./etc/db-ext-vector.sql:/docker-entrypoint-initdb.d/db-ext-vector.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "talkdai", "-U", "talkdai"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+  dialog:
+    build: .
+    stdin_open: true
+    tty: true
+    ports:
+      - '8000:8000'
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data/

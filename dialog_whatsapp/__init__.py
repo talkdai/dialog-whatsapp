@@ -165,3 +165,6 @@ async def whats_audio_post(body: Any = Body(None)):
         send_text_to_whatsapp(processed_message, from_number)
 
     return {}
+
+def register_plugin(app):
+    app.include_router(router, prefix="/whatsapp")
