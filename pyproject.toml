@@ -13,3 +13,7 @@ python = ">=3.11,<3.13"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.plugins.dialog]
+whatsapp = 'dialog_whatsapp'
