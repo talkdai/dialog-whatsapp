@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "dialog-whatsapp"
+version = "0.0.1"
+description = ""
+authors = ["Vinicius Mesel <4984147+vmesel@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "dialog_whatsapp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

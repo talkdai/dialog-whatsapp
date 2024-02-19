@@ -8,8 +8,8 @@ from .settings import (
     WHATSAPP_VERIFY_TOKEN,
     WHATSAPP_API_TOKEN,
     WHATSAPP_ACCOUNT_NUMBER,
+    PROJECT_CONFIG
 )
-from dialog.settings import PROJECT_CONFIG
 
 from dialog.models.helpers import create_session
 
@@ -26,7 +26,6 @@ async def whatsapp_get_response(request):
 
     raise HTTPException(status_code=404)
 
-
 async def whatsapp_post_response(request, body):
     value = body["entry"][0]["changes"][0]["value"]
     try:
@@ -41,7 +40,7 @@ async def whatsapp_post_response(request, body):
         "Authorization": f"Bearer {WHATSAPP_API_TOKEN}",
         "Content-Type": "application/json",
     }
-    url = f"https://graph.facebook.com/v17.0/{WHATSAPP_ACCOUNT_NUMBER}/messages"
+    url = f"https://graph.facebook.com/v17.0/{phone_number_id}/messages"
 
     create_session(identifier=from_number)
 

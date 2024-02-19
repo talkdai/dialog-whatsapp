@@ -3,19 +3,22 @@ import requests
 import hashlib
 
 from typing import Any
-from dialog.llm import get_llm_class
 from fastapi import APIRouter, Body, HTTPException, Query, Depends, Request
 from openai import OpenAI
 
 from .settings import (
     WHATSAPP_API_TOKEN,
     WHATSAPP_ACCOUNT_NUMBER,
-    API_HOST
+    WHATSAPP_VERIFY_TOKEN,
+    API_HOST,
+    PROJECT_CONFIG,
+    DATASET,
+    OPENAI_API_KEY,
+    ROUTE_SUFFIX
 )
-from dialog.settings import PROJECT_CONFIG
+from dialog.llm.default import DialogLLM
 
 from dialog.models.helpers import create_session
-from plugins.whats_audio.responses import whatsapp_get_response
 from uuid import uuid4
 
 client = OpenAI()
@@ -84,21 +87,32 @@ def transcribe_audio(audio_id):
     logger.info(f"Got transcript back from OpenAI - {transcript}")
     return transcript.text
 
-@router.get("/whats-audio")
+@router.get(f"/tenant-{ROUTE_SUFFIX}")
 async def whats_audio_get(request: Request):
-    content = await whatsapp_get_response(request)
-    return content
+    logging.info(request.query_params.get("hub.verify_token"))
+    logging.info(WHATSAPP_VERIFY_TOKEN)
+    if request.query_params.get("hub.verify_token") == WHATSAPP_VERIFY_TOKEN:
+        return int(request.query_params.get("hub.challenge"))
 
-@router.post("/whats-audio")
+    raise HTTPException(status_code=404)
+
+@router.post(f"/tenant-{ROUTE_SUFFIX}")
 async def whats_audio_post(body: Any = Body(None)):
     logger.info("Started")
     value = body["entry"][0]["changes"][0]["value"]
+    logging.info("Body: ", body)
 
     try:
         from_number = value["messages"][0]["from"]
         message_type = value["messages"][0].get("type")
     except KeyError:
         return {}
+
+    phone_number_id = value["metadata"]["phone_number_id"]
+    logging.info(f"Got message for number {phone_number_id}")
+    if phone_number_id != WHATSAPP_ACCOUNT_NUMBER:
+        logger.info("Phone number not supported")
+        return {"status": "success"}
 
     if message_type not in ["audio", "text"]:
         logger.info("Message type not supported")
@@ -114,10 +128,19 @@ async def whats_audio_post(body: Any = Body(None)):
 
     logger.info(f"Got message from {from_number} - message: {message}")
 
-    create_session(identifier=from_number)
+    session_id = from_number
+    if DATASET:
+        session_id = f"{DATASET}_{from_number}"
 
-    LLM = get_llm_class()
-    llm = LLM(config=PROJECT_CONFIG, session_id=from_number)
+    create_session(identifier=session_id)
+
+    llm = DialogLLM(
+        config=PROJECT_CONFIG,
+        session_id=session_id,
+        dataset=DATASET,
+        llm_key=OPENAI_API_KEY
+    )
+    logger.info(f"Project config: {PROJECT_CONFIG}")
     processed_message = llm.process(message)
     processed_message = processed_message["text"]
     logger.info("Processed message: %s", processed_message)
@@ -142,3 +165,6 @@ async def whats_audio_post(body: Any = Body(None)):
         send_text_to_whatsapp(processed_message, from_number)
 
     return {}
+
+def register_plugin(app):
+    app.include_router(router, prefix="/whatsapp")
