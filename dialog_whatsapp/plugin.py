@@ -6,7 +6,7 @@ from typing import Any
 from fastapi import APIRouter, Body, HTTPException, Query, Depends, Request
 from openai import OpenAI
 
-from .settings import (
+from dialog_whatsapp.settings import (
     WHATSAPP_API_TOKEN,
     WHATSAPP_ACCOUNT_NUMBER,
     WHATSAPP_VERIFY_TOKEN,

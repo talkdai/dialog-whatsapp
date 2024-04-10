@@ -5,7 +5,7 @@ import logging
 
 from pathlib import Path
 from decouple import config
-from dialog.settings import PROJECT_CONFIG as DIALOG_PROJECT_CONFIG
+# from dialog.settings import PROJECT_CONFIG as DIALOG_PROJECT_CONFIG
 
 file_path = os.path.abspath(__file__)
 dir_path = os.path.dirname(file_path)

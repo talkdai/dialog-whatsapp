@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dialog-whatsapp"
-version = "0.0.1.2"
+version = "0.0.1.4"
 description = ""
 authors = ["Vinicius Mesel <4984147+vmesel@users.noreply.github.com>"]
 readme = "README.md"
@@ -16,4 +16,4 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.plugins.dialog]
-whatsapp = 'dialog_whatsapp'
+whatsapp = 'dialog_whatsapp.plugin'
