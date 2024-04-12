@@ -138,7 +138,7 @@ async def whats_audio_post(body: Any = Body(None)):
         config=PROJECT_CONFIG,
         session_id=session_id,
         dataset=DATASET,
-        llm_key=OPENAI_API_KEY
+        llm_api_key=OPENAI_API_KEY
     )
     logger.info(f"Project config: {PROJECT_CONFIG}")
     processed_message = llm.process(message)
