@@ -11,7 +11,7 @@ from dialog_whatsapp.settings import (
     PROJECT_CONFIG
 )
 
-from dialog.models.helpers import create_session
+from dialog_lib.db.utils import create_chat_session as create_session
 
 logger = logging.getLogger(__name__)
 
