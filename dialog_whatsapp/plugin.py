@@ -17,7 +17,7 @@ from dialog_whatsapp.settings import (
     ROUTE_SUFFIX
 )
 from dialog.llm.default import DialogLLM
-
+from dialog.db import get_session
 from dialog_lib.db.utils import create_chat_session as create_session
 from uuid import uuid4
 
@@ -132,7 +132,7 @@ async def whats_audio_post(body: Any = Body(None)):
     if DATASET:
         session_id = f"{DATASET}_{from_number}"
 
-    create_session(identifier=session_id)
+    create_session(identifier=session_id, dbsession=next(get_session()))
 
     llm = DialogLLM(
         config=PROJECT_CONFIG,

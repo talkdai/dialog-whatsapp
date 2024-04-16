@@ -10,7 +10,7 @@ from dialog_whatsapp.settings import (
     WHATSAPP_ACCOUNT_NUMBER,
     PROJECT_CONFIG
 )
-
+from dialog.db import get_session
 from dialog_lib.db.utils import create_chat_session as create_session
 
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ async def whatsapp_post_response(request, body):
     }
     url = f"https://graph.facebook.com/v17.0/{phone_number_id}/messages"
 
-    create_session(identifier=from_number)
+    create_session(identifier=from_number, dbsession=next(get_session()))
 
     LLM = get_llm_class()
     llm = LLM(config=PROJECT_CONFIG, session_id=from_number)
